@@ -5,12 +5,13 @@ BaseUserManager, AbstractBaseUser
 
 
 class MyUserManager(BaseUserManager):
-	def create_user(self, email, password=None):
+	def create_user(self, email, password,role):
 		if not email:
 			raise ValueError('Users must have an email address')
 		user = self.model(
 		email=self.normalize_email(email)
 		)
+		user.role = role
 		user.set_password(password)
 		user.save(using=self._db)
 		return user
@@ -32,6 +33,7 @@ class MyUser(AbstractBaseUser):
 	max_length=255,
 	unique=True,
 	)
+	role = models.CharField(max_length=50)
 	is_active = models.BooleanField(default=True)
 	is_admin = models.BooleanField(default=False)
 	objects = MyUserManager()
